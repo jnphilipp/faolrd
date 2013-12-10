@@ -87,12 +87,40 @@ public class JSONParser implements Parser {
 	}
 
 	/**
+	 * Returns the JSONObject for the given key.
+	 * @param key key
+	 * @return JSONArray
+	 */
+	public JSONObject getJSONObject(String key) {
+		return (JSONObject)this.jsonObject.get(key);
+	}
+
+	/**
+	 * Returns the JSONObject for the given key.
+	 * @param key key
+	 * @return JSONArray
+	 */
+	public JSONObject getJSONObject(JSONObject object, String key) {
+		return (object == null ? null : (JSONObject)object.get(key));
+	}
+
+	/**
 	 * Returns the JSONArray for the given key.
 	 * @param key key
 	 * @return JSONArray
 	 */
 	public JSONArray getJSONArray(String key) {
-		return (JSONArray)jsonObject.get(key);
+		return (JSONArray)this.jsonObject.get(key);
+	}
+
+	/**
+	 * Returns the JSONArray for the given key.
+	 * @param object JSONObject
+	 * @param key key
+	 * @return JSONArray
+	 */
+	public JSONArray getJSONArray(JSONObject object, String key) {
+		return (object == null ? null : (JSONArray)object.get(key));
 	}
 
 	/**
@@ -105,6 +133,16 @@ public class JSONParser implements Parser {
 	}
 
 	/**
+	 * Returns the content for the given key.
+	 * @param object JSON object
+	 * @param key key
+	 * @return content
+	 */
+	public String getJSONContent(JSONObject object, String key) {
+		return object.get(key).toString();
+	}
+
+	/**
 	 * Returns the given fields in the JSONArray.
 	 * @param array JSONArray
 	 * @param keys keys
@@ -113,6 +151,8 @@ public class JSONParser implements Parser {
 	@SuppressWarnings("unchecked")
 	public List<String[]> getJSONContents(JSONArray array, String... keys) {
 		List<String[]> contents = new ArrayList<>();
+		if ( array == null )
+			return contents;
 
 		Iterator<JSONObject> iterator = array.iterator();
 		while ( iterator.hasNext() ) {
