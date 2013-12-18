@@ -1,0 +1,3 @@
+#configurations
+wordlist.file=
+GoogleWebSearchJSONParser.sleeptime=1000

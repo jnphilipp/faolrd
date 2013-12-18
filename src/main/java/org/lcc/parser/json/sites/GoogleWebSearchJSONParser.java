@@ -15,6 +15,7 @@ import org.lcc.results.google.GoogleResult;
 * @version 0.0.1
 */
 public class GoogleWebSearchJSONParser extends JSONParser {
+	private long sleep = 1000;
 	private GoogleMeta meta;
 	private List<GoogleResult> results;
 
@@ -24,6 +25,14 @@ public class GoogleWebSearchJSONParser extends JSONParser {
 
 	public List<GoogleResult> getResults() {
 		return this.results;
+	}
+
+	public long getSleep() {
+		return sleep;
+	}
+
+	public void setSleep(long sleep) {
+		this.sleep = sleep;
 	}
 
 	@Override
@@ -52,9 +61,7 @@ public class GoogleWebSearchJSONParser extends JSONParser {
 		int i = 0;
 		this.results = new ArrayList<>();
 		while ( true ) {
-			System.out.print(".");
 			String google = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&start=" + i * 4 + "&q=";
-			System.out.println(google + URLEncoder.encode(query, charset));
 			super.fetch(google + URLEncoder.encode(query, charset));
 
 			if ( !this.getJSONContent("responseStatus").equals("200") )
@@ -67,10 +74,10 @@ public class GoogleWebSearchJSONParser extends JSONParser {
 				for ( String[] result : results_content )
 					this.results.add(new GoogleResult(result[0], result[1], result[2]));
 
+			Thread.sleep(this.sleep);
 			i++;
 		}
 
-		System.out.println();
 		this.meta.setCount(this.results.size());
 	}
 }

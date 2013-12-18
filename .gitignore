@@ -1,3 +1,5 @@
+config/*.properties
+data/*
 target/*
 .settings/*
 .classpath
