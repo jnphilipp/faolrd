@@ -26,7 +26,7 @@ public class LanguageDetection {
 					g.setSleep(Manager.getManager().getLongProperty("GoogleWebSearchJSONParser.sleeptime"));
 					g.fetchAll(word);
 
-					Manager.info(LanguageDetection.class, g.getMeta().getUrl(), "Estimated Count: " + g.getMeta().getEstimatedCount(), "Count: " + g.getMeta().getCount() + "\n");
+					Manager.info(LanguageDetection.class, word, "Estimated Count: " + g.getMeta().getEstimatedCount(), "Count: " + g.getMeta().getCount() + "\n");
 				}
 			}
 			catch ( FileNotFoundException e ) {
