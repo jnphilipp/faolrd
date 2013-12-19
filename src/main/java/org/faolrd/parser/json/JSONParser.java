@@ -1,4 +1,4 @@
-package org.lcc.parser.json;
+package org.faolrd.parser.json;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.faolrd.parser.Parser;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.lcc.parser.Parser;
 
 /**
  *

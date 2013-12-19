@@ -1,6 +1,6 @@
-package org.lcc.results.google;
+package org.faolrd.results.google;
 
-import org.lcc.results.Result;
+import org.faolrd.results.Result;
 
 public class GoogleResult extends Result {
 	public GoogleResult() {}

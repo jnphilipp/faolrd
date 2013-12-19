@@ -1,6 +1,6 @@
-package org.lcc.results.google;
+package org.faolrd.results.google;
 
-import org.lcc.results.Meta;
+import org.faolrd.results.Meta;
 
 public class GoogleMeta extends Meta {
 	private int estimatedCount;

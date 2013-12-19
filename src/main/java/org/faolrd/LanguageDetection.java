@@ -1,13 +1,18 @@
-package org.lcc;
+package org.faolrd;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.lcc.io.FReader;
-import org.lcc.parser.json.sites.GoogleWebSearchJSONParser;
-import org.lcc.utils.Helpers;
+import org.faolrd.io.FReader;
+import org.faolrd.parser.json.sites.GoogleWebSearchJSONParser;
+import org.faolrd.utils.Helpers;
 
+/**
+ *
+ * @author jnphilipp
+ * @version 0.0.1
+ */
 public class LanguageDetection {
 	public void start() {
 		String wordlist_file = Helpers.getSubUserDir("data") + "/" + Manager.getManager().getProperty("wordlist.file");

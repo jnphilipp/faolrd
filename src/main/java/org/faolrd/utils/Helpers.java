@@ -1,4 +1,4 @@
-package org.lcc.utils;
+package org.faolrd.utils;
 
 import java.util.Collection;
 

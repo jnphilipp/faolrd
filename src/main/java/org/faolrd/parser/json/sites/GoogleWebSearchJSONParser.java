@@ -1,13 +1,13 @@
-package org.lcc.parser.json.sites;
+package org.faolrd.parser.json.sites;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lcc.parser.json.JSONParser;
-import org.lcc.results.google.GoogleMeta;
-import org.lcc.results.google.GoogleResult;
+import org.faolrd.parser.json.JSONParser;
+import org.faolrd.results.google.GoogleMeta;
+import org.faolrd.results.google.GoogleResult;
 
 /**
 *

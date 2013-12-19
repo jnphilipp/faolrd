@@ -1,4 +1,4 @@
-package org.lcc.results;
+package org.faolrd.results;
 
 public abstract class Meta {
 	public int count;
