@@ -1,0 +1,7 @@
+faolrd
+======
+
+fully automated online language resource detection
+
+
+To run: mvn compile exec:java
