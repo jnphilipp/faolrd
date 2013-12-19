@@ -86,6 +86,13 @@ public class Manager {
 	}
 
 	/**
+	 * @return the manager
+	 */
+	public static synchronized Manager getManager() {
+		return manager;
+	}
+
+	/**
 	 * @return the properties
 	 */
 	public Properties getProperties() {
