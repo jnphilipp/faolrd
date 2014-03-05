@@ -36,7 +36,7 @@ public class GoogleWebSearchJSONParser extends JSONParser {
 
 	@Override
 	public void fetch(String query) throws UnsupportedEncodingException, Exception {
-		String google = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=";
+		String google = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&q=";
 		String charset = "UTF-8";
 		super.fetch(google + URLEncoder.encode(query, charset));
 
