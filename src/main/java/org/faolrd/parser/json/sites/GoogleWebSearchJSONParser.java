@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.faolrd.parser.json.JSONParser;
 import org.faolrd.results.google.GoogleMeta;
 import org.faolrd.results.google.GoogleResult;
@@ -56,12 +55,12 @@ public class GoogleWebSearchJSONParser extends JSONParser {
 
 	public void fetchAll(String query) throws UnsupportedEncodingException, Exception {
 		String charset = "UTF-8";
-		this.meta = new GoogleMeta("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=" + URLEncoder.encode(query, charset));
+		this.meta = new GoogleMeta("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&q=" + URLEncoder.encode(query, charset));
 
 		int i = 0;
 		this.results = new ArrayList<>();
 		while ( true ) {
-			String google = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&start=" + i * 4 + "&q=";
+			String google = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&start=" + i * 8 + "&q=";
 			super.fetch(google + URLEncoder.encode(query, charset));
 
 			if ( !this.getJSONContent("responseStatus").equals("200") )
