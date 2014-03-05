@@ -3,5 +3,8 @@ faolrd
 
 fully automated online language resource detection
 
+Bevor run: copy the resources folder from the jlani project into the faolrd folder
+(http://wortschatz.uni-leipzig.de/~cbiemann/software/toolbox/ASV_Toolbox_JLanIv1.0.zip)
+
 
 To run: mvn compile exec:java
