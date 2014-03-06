@@ -17,10 +17,10 @@ import org.faolrd.results.google.GoogleResult;
 * @version 0.0.2
 */
 public class GoogleWebSearchJSONParser extends JSONParser implements PaginatedParser {
-	private long sleep = 1000;
+	private boolean hasNextPage = true;
+	private int page = 0;
 	private GoogleMeta meta;
 	private List<GoogleResult> results;
-	private int page = 64;
 
 	public GoogleWebSearchJSONParser() {
 		this.results = new LinkedList<>();
@@ -34,25 +34,15 @@ public class GoogleWebSearchJSONParser extends JSONParser implements PaginatedPa
 		return this.results;
 	}
 
-	public long getSleep() {
-		return sleep;
-	}
-
-	public void setSleep(long sleep) {
-		this.sleep = sleep;
-	}
-
 	@Override
 	public void firstPage() {
-		this.page = 64;
+		this.page = 0;
+		this.hasNextPage = true;
 	}
 
 	@Override
 	public boolean hasNextPage() {
-		if ( this.meta == null )
-			return true;
-
-		return this.meta.getCount() < this.meta.getEstimatedCount();
+		return this.hasNextPage;
 	}
 
 	@Override
@@ -78,8 +68,11 @@ public class GoogleWebSearchJSONParser extends JSONParser implements PaginatedPa
 
 		super.fetch("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&start=" + this.page + "&q=" + URLEncoder.encode(query, charset), proxy);
 		this.responseCode = Integer.parseInt(this.getJSONContent("responseStatus"));
-		if ( !this.getJSONContent("responseStatus").equals("200") )
-			throw new Exception("Response code is: " + this.getJSONContent("responseStatus"));
+		if ( !this.getJSONContent("responseStatus").equals("200") ) {
+			this.hasNextPage = false;
+			Manager.debug(GoogleWebSearchJSONParser.class, "Response status: " + this.getJSONContent("responseStatus"));
+			return;
+		}
 
 		this.meta.setEstimatedCount(Integer.parseInt(this.getJSONContent(this.getJSONObject(this.getJSONObject("responseData"), "cursor"), "estimatedResultCount")));
 
@@ -88,7 +81,6 @@ public class GoogleWebSearchJSONParser extends JSONParser implements PaginatedPa
 		for ( String[] result : results_content )
 			this.results.add(new GoogleResult(result[0], result[1], result[2]));
 		this.meta.setCount(this.results.size());
-		Manager.debug(query, "Count: " + this.meta.getCount());
-		Thread.sleep(this.sleep);
+		Manager.debug(GoogleWebSearchJSONParser.class, query, "Count: " + this.meta.getCount());
 	}
 }
