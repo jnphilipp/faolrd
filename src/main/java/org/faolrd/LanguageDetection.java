@@ -14,6 +14,7 @@ import org.faolrd.io.FReader;
 import org.faolrd.net.ProxyManager;
 import org.faolrd.parser.html.sites.HideMyAssHTMLParser;
 import org.faolrd.parser.json.sites.GoogleWebSearchJSONParser;
+import org.faolrd.results.google.GoogleMeta;
 import org.faolrd.utils.Helpers;
 
 /**
@@ -44,7 +45,7 @@ public class LanguageDetection {
 				proxyManager.fetch(word);
 				GoogleWebSearchJSONParser g = (GoogleWebSearchJSONParser)proxyManager.getParser();
 
-				Manager.info(LanguageDetection.class, word, "Estimated Count: " + g.getMeta().getEstimatedCount(), "Count: " + g.getMeta().getCount() + "\n");
+				Manager.info(LanguageDetection.class, word, "Estimated Count: " + ((GoogleMeta)g.getMeta()).getEstimatedCount(), "Count: " + g.getMeta().getCount() + "\n");
 			}
 		}
 		else

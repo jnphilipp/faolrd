@@ -35,7 +35,7 @@ public class HTMLParser implements Parser {
 	/**
 	 * User-Agent which is used when connecting to the page.
 	 */
-	protected String user_agent = "";
+	protected String userAgent = "";
 	/**
 	 * content type
 	 */
@@ -44,7 +44,9 @@ public class HTMLParser implements Parser {
 	/**
 	 * Default constructor.
 	 */
-	public HTMLParser() {}
+	public HTMLParser() {
+		this.setDefaultUserAgent();
+	}
 
 	/**
 	 * Creates a new HTMLParser and fetches the given site.
@@ -70,14 +72,14 @@ public class HTMLParser implements Parser {
 	 * @param agent New User-Agent to use.
 	 */
 	public void setUserAgent(String agent) {
-		this.user_agent = agent;
+		this.userAgent = agent;
 	}
 
 	/**
 	 * Sets the User-Agent to the default User-Agent.
 	 */
 	public void setDefaultUserAgent() {
-		this.user_agent = HTMLParser.DEFAULT_USER_AGENT;
+		this.userAgent = HTMLParser.DEFAULT_USER_AGENT;
 	}
 
 	/**
@@ -147,8 +149,8 @@ public class HTMLParser implements Parser {
 		URL u = new URL(url);
 		HttpURLConnection con = (HttpURLConnection)u.openConnection(proxy);
 
-		if ( !this.user_agent.equals("") )
-			con.setRequestProperty("User-Agent", this.user_agent);
+		if ( !this.userAgent.equals("") )
+			con.setRequestProperty("User-Agent", this.userAgent);
 
 		con.setRequestProperty("Accept-Charset", "UTF-8");
 

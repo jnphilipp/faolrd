@@ -1,11 +1,25 @@
 package org.faolrd.parser;
 
+import java.util.List;
+import org.faolrd.results.Meta;
+import org.faolrd.results.Result;
+
 /**
  *
  * @author jnphilipp
  * @version 0.0.1
  */
 public interface PaginatedParser {
+	/**
+	 * @return the meta
+	 */
+	public abstract Meta getMeta();
+
+	/**
+	 * @return the results
+	 */
+	public abstract List<Result> getResults();
+
 	/**
 	 * The first page.
 	 */

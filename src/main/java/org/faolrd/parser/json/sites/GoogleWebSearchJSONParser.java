@@ -8,6 +8,8 @@ import java.util.List;
 import org.faolrd.Manager;
 import org.faolrd.parser.PaginatedParser;
 import org.faolrd.parser.json.JSONParser;
+import org.faolrd.results.Meta;
+import org.faolrd.results.Result;
 import org.faolrd.results.google.GoogleMeta;
 import org.faolrd.results.google.GoogleResult;
 
@@ -19,18 +21,20 @@ import org.faolrd.results.google.GoogleResult;
 public class GoogleWebSearchJSONParser extends JSONParser implements PaginatedParser {
 	private boolean hasNextPage = true;
 	private int page = 0;
-	private GoogleMeta meta;
-	private List<GoogleResult> results;
+	private Meta meta;
+	private List<Result> results;
 
 	public GoogleWebSearchJSONParser() {
 		this.results = new LinkedList<>();
 	}
 
-	public GoogleMeta getMeta() {
+	@Override
+	public Meta getMeta() {
 		return this.meta;
 	}
 
-	public List<GoogleResult> getResults() {
+	@Override
+	public List<Result> getResults() {
 		return this.results;
 	}
 
@@ -74,7 +78,7 @@ public class GoogleWebSearchJSONParser extends JSONParser implements PaginatedPa
 			return;
 		}
 
-		this.meta.setEstimatedCount(Integer.parseInt(this.getJSONContent(this.getJSONObject(this.getJSONObject("responseData"), "cursor"), "estimatedResultCount")));
+		((GoogleMeta)this.meta).setEstimatedCount(Integer.parseInt(this.getJSONContent(this.getJSONObject(this.getJSONObject("responseData"), "cursor"), "estimatedResultCount")));
 
 		//"GsearchResultClass", "unescapedUrl", "url", "visibleUrl", "cacheUrl", "title", "titleNoFormatting", "content");
 		List<String[]> results_content = this.getJSONContents(this.getJSONArray(this.getJSONObject("responseData"), "results"), "titleNoFormatting", "url", "content");

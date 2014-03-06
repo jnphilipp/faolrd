@@ -1,6 +1,7 @@
 package org.faolrd.parser.html.sites;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,6 +9,8 @@ import org.faolrd.net.Proxy;
 import org.faolrd.parser.PaginatedParser;
 import org.faolrd.parser.ProxyParser;
 import org.faolrd.parser.html.HTMLParser;
+import org.faolrd.results.Meta;
+import org.faolrd.results.Result;
 
 /**
  *
@@ -31,6 +34,16 @@ public class HideMyAssHTMLParser extends HTMLParser implements PaginatedParser, 
 	 */
 	public void setMaxPages(int maxPages) {
 		this.maxPages = maxPages;
+	}
+
+	@Override
+	public Meta getMeta() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public List<Result> getResults() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	/**
