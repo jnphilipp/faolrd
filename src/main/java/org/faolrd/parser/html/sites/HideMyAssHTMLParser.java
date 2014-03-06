@@ -1,11 +1,12 @@
 package org.faolrd.parser.html.sites;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.faolrd.net.Proxy;
 import org.faolrd.parser.PaginatedParser;
 import org.faolrd.parser.ProxyParser;
 import org.faolrd.parser.html.HTMLParser;
@@ -15,7 +16,7 @@ import org.faolrd.results.Result;
 /**
  *
  * @author jnphilipp
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class HideMyAssHTMLParser extends HTMLParser implements PaginatedParser, ProxyParser {
 	private int maxPages = 10;
@@ -98,21 +99,21 @@ public class HideMyAssHTMLParser extends HTMLParser implements PaginatedParser, 
 		String url = "https://hidemyass.com/proxy-list/";
 		super.fetch(url + this.page);
 
-		Matcher lines = Pattern.compile("</thead[^>]*>[^<]*<tr[^>]*>(.*?)(?=</tr>)", Pattern.MULTILINE | Pattern.DOTALL).matcher(this.code);
-		while ( lines.find() ) {
-			String line = lines.group(1);
+		List<String> lines = this.getTags("tr");
+		for ( String line : lines ) {
+			if ( line.contains("theader") )
+				continue;
+
 			Matcher cells = Pattern.compile("<td[^>]*>(.*?)</td[^>]*>[^<]*<td[^>]*>(.*?)</td[^>]*>[^<]*<td[^>]*>(.*?)</td[^>]*>[^<]*<td[^>]*>(.*?)</td[^>]*>[^<]*<td[^>]*>(.*?)</td[^>]*>[^<]*<td[^>]*>(.*?)</td[^>]*>[^<]*<td[^>]*>(.*?)</td[^>]*>[^<]*<td[^>]*>(.*?)</td[^>]*>", Pattern.MULTILINE | Pattern.DOTALL).matcher(line);
 
 			if ( cells.find() ) {
 				String ip = cells.group(2);
 				int port = Integer.parseInt(cells.group(3).trim());
-				int type = 0;
-				if ( cells.group(7).trim().equalsIgnoreCase("HTTP") )
-					type = Proxy.HTTP;
-				else if ( cells.group(7).trim().equalsIgnoreCase("HTTPS") )
-					type = Proxy.HTTPS;
+				Proxy.Type type = Proxy.Type.DIRECT;
+				if ( cells.group(7).trim().equalsIgnoreCase("HTTP") || cells.group(7).trim().equalsIgnoreCase("HTTPS") )
+					type = Proxy.Type.HTTP;
 				else if ( cells.group(7).trim().equalsIgnoreCase("socks4/5") )
-					type = Proxy.SOCKS;
+					type = Proxy.Type.SOCKS;
 
 				Matcher matcher = Pattern.compile("[.](-?[_a-zA-Z]+[_a-zA-Z0-9-]*)\\s*[{]display\\s*[:]\\s*none[}]").matcher(ip);
 				while ( matcher.find() )
@@ -122,7 +123,14 @@ public class HideMyAssHTMLParser extends HTMLParser implements PaginatedParser, 
 				ip = ip.replaceAll("<style>[^<]+</style>", "");
 				ip = ip.replaceAll("<[^>]+>", "").trim();
 
-				this.proxies.add(new Proxy(ip, port, type));
+				InetSocketAddress socket;
+				try {
+					socket = new InetSocketAddress(ip, port);
+				}
+				catch ( Exception e ) {
+					continue;
+				}
+				this.proxies.add(new Proxy(type, socket));
 			}
 		}
 	}

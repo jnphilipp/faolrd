@@ -1,12 +1,12 @@
 package org.faolrd.parser;
 
+import java.net.Proxy;
 import java.util.Set;
-import org.faolrd.net.Proxy;
 
 /**
  *
  * @author jnphilipp
- * @version 0.0.1
+ * @version 0.0.2
  */
 public interface ProxyParser {
 	/**

@@ -5,16 +5,13 @@ import de.uni_leipzig.asv.toolbox.jLanI.kernel.LanIKernel;
 import de.uni_leipzig.asv.toolbox.jLanI.kernel.Request;
 import de.uni_leipzig.asv.toolbox.jLanI.kernel.RequestException;
 import de.uni_leipzig.asv.toolbox.jLanI.kernel.Response;
-import java.io.File;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
-import org.faolrd.io.FReader;
 import org.faolrd.net.ProxyManager;
 import org.faolrd.parser.html.sites.HideMyAssHTMLParser;
 import org.faolrd.parser.json.sites.GoogleWebSearchJSONParser;
-import org.faolrd.results.google.GoogleMeta;
 import org.faolrd.utils.Helpers;
 
 /**
@@ -38,7 +35,8 @@ public class LanguageDetection {
 		ProxyManager proxyManager = new ProxyManager();
 		proxyManager.setParser(new GoogleWebSearchJSONParser());
 		proxyManager.setProxyParser(new HideMyAssHTMLParser());
-		if ( new File(wordlist_file).exists() ) {
+		proxyManager.loadProxies();
+		/*if ( new File(wordlist_file).exists() ) {
 			String[] words = FReader.readLines(wordlist_file);
 
 			for ( String word : words ) {
@@ -49,7 +47,7 @@ public class LanguageDetection {
 			}
 		}
 		else
-			Manager.error(App.class, "The wordlist file does not exist: " + wordlist_file);
+			Manager.error(App.class, "The wordlist file does not exist: " + wordlist_file);*/
 	}
 	
 	/**

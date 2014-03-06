@@ -1,6 +1,6 @@
 package org.faolrd.net;
 
-import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.Set;
 import org.faolrd.Manager;
 import org.faolrd.parser.PaginatedParser;
@@ -10,7 +10,7 @@ import org.faolrd.parser.ProxyParser;
 /**
  *
  * @author jnphilipp
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class ProxyManager {
 	private Parser parser;
@@ -45,10 +45,8 @@ public class ProxyManager {
 		this.proxyParser = proxyParser;
 	}
 
-	protected java.net.Proxy getProxy(Proxy proxy) {
-		java.net.Proxy.Type type = (proxy.getType() == Proxy.SOCKS ? java.net.Proxy.Type.SOCKS : java.net.Proxy.Type.HTTP);
-		InetSocketAddress socket = new InetSocketAddress(proxy.getIP(), proxy.getPort());
-		return new java.net.Proxy(type, socket);
+	public void loadProxies() throws Exception {
+		this.proxies = this.proxyParser.getProxies();
 	}
 
 	public void fetch(String url) throws Exception {
@@ -71,7 +69,7 @@ public class ProxyManager {
 		Proxy proxy = this.proxies.iterator().next();
 		Manager.debug(ProxyManager.class, proxy.toString());
 
-		this.parser.fetch(url, this.getProxy(proxy));
+		this.parser.fetch(url, proxy);
 		this.proxies.remove(proxy);
 	}
 
