@@ -1,6 +1,7 @@
 package org.faolrd.parser.html.sites;
 
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -20,11 +21,11 @@ import org.faolrd.results.google.GoogleResult;
 /**
  *
  * @author jnphilipp
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class GoogleWebSearchHTMLParser extends HTMLParser implements PaginatedParser {
 	private int page = 0;
-	private int numPerPage = 1000;
+	private int numPerPage = 100;
 	private GoogleMeta meta;
 	private List<Result> results;
 
@@ -70,8 +71,11 @@ public class GoogleWebSearchHTMLParser extends HTMLParser implements PaginatedPa
 
 	@Override
 	public void fetch(String query, Proxy proxy) throws UnsupportedEncodingException, Exception {
-		String url = "https://www.google.com/search?q={0}&start={1}&num={2}&ie=utf-8";
+		String url = "http://www.google.com/search?q={0}&start={1}&num={2}&ie=utf-8";
 		super.fetch(MessageFormat.format(url, URLEncoder.encode(query, "UTF-8"), String.valueOf(this.page), String.valueOf(this.numPerPage)), true, proxy);
+
+		if ( this.responseCode != HttpURLConnection.HTTP_OK )
+			return;
 
 		if ( this.meta == null )
 			this.meta = new GoogleMeta(MessageFormat.format("https://www.google.com/search?q={0}&ie=utf-8", URLEncoder.encode(query, "UTF-8")));
@@ -91,6 +95,7 @@ public class GoogleWebSearchHTMLParser extends HTMLParser implements PaginatedPa
 
 			this.results.add(result);
 		}
-		Manager.info(GoogleWebSearchHTMLParser.class, "Results: " + this.results.size());
+		this.meta.setCount(this.results.size());
+		Manager.info(GoogleWebSearchHTMLParser.class, "Query: " + query, "Results: " + this.results.size());
 	}
 }

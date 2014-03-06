@@ -20,7 +20,7 @@ import org.faolrd.parser.Parser;
 /**
  *
  * @author jnphilipp
- * @version 1.7.2
+ * @version 1.7.3
  */
 public class HTMLParser implements Parser {
 	public static final String DEFAULT_USER_AGENT = "Mozilla/5.0";
@@ -153,7 +153,6 @@ public class HTMLParser implements Parser {
 			con.setRequestProperty("User-Agent", this.userAgent);
 
 		con.setRequestProperty("Accept-Charset", "UTF-8");
-
 		con.connect();
 		String header = con.getHeaderField("Content-Type");
 		String charset = "utf-8";
@@ -166,24 +165,26 @@ public class HTMLParser implements Parser {
 		}
 
 		this.contentType = header;
-
-		InputStreamReader in = new InputStreamReader(con.getInputStream(), charset);
-		BufferedReader buff = new BufferedReader(in);
-
-		String line;
-		StringBuilder text = new StringBuilder();
-
-		while ( (line = buff.readLine()) != null ) {
-			text.append(line);
-			text.append("\n");
-		}
-
-		buff.close();
-		in.close();
 		this.responseCode = con.getResponseCode();
-		con.disconnect();
 
-		this.code = text.toString().replace("\0", " ").replace("\u2028", "\n").replace(String.valueOf((char)160), " ");
+		if ( this.responseCode == HttpURLConnection.HTTP_OK ) {
+			InputStreamReader in = new InputStreamReader(con.getInputStream(), charset);
+			BufferedReader buff = new BufferedReader(in);
+
+			String line;
+			StringBuilder text = new StringBuilder();
+
+			while ( (line = buff.readLine()) != null ) {
+				text.append(line);
+				text.append("\n");
+			}
+
+			buff.close();
+			in.close();
+
+			this.code = text.toString().replace("\0", " ").replace("\u2028", "\n").replace(String.valueOf((char)160), " ");
+		}
+		con.disconnect();
 
 		if ( decodeHTML )
 			this.code = this.decode();

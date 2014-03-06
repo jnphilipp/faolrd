@@ -5,19 +5,23 @@ import de.uni_leipzig.asv.toolbox.jLanI.kernel.LanIKernel;
 import de.uni_leipzig.asv.toolbox.jLanI.kernel.Request;
 import de.uni_leipzig.asv.toolbox.jLanI.kernel.RequestException;
 import de.uni_leipzig.asv.toolbox.jLanI.kernel.Response;
+import java.io.File;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
+import org.faolrd.io.FReader;
 import org.faolrd.net.ProxyManager;
-import org.faolrd.parser.html.sites.HideMyAssHTMLParser;
-import org.faolrd.parser.json.sites.GoogleWebSearchJSONParser;
+import org.faolrd.parser.html.sites.GoogleWebSearchHTMLParser;
+import org.faolrd.results.Meta;
+import org.faolrd.results.google.GoogleMeta;
 import org.faolrd.utils.Helpers;
 
 /**
  *
  * @author jnphilipp
- * @version 0.0.3
+ * @version 0.0.4
  */
 public class LanguageDetection {	
 	/**
@@ -31,23 +35,20 @@ public class LanguageDetection {
 	 */
 	public void start() throws Exception {
 		String wordlist_file = Helpers.getSubUserDir("data") + "/" + Manager.getManager().getProperty("wordlist.file");
+		if ( !new File(wordlist_file).exists() )
+			throw new IOException("The wordlist file does not exist: " + wordlist_file);
 
 		ProxyManager proxyManager = new ProxyManager();
-		proxyManager.setParser(new GoogleWebSearchJSONParser());
-		proxyManager.setProxyParser(new HideMyAssHTMLParser());
-		proxyManager.loadProxies();
-		/*if ( new File(wordlist_file).exists() ) {
-			String[] words = FReader.readLines(wordlist_file);
+		//proxyManager.setProxyParser(new HideMyAssHTMLParser());
+		String[] words = FReader.readLines(wordlist_file);
 
-			for ( String word : words ) {
-				proxyManager.fetch(word);
-				GoogleWebSearchJSONParser g = (GoogleWebSearchJSONParser)proxyManager.getParser();
+		for ( String word : words ) {
+			proxyManager.setParser(new GoogleWebSearchHTMLParser());
+			proxyManager.fetch(word);
+			Meta meta = ((GoogleWebSearchHTMLParser)proxyManager.getParser()).getMeta();
 
-				Manager.info(LanguageDetection.class, word, "Estimated Count: " + ((GoogleMeta)g.getMeta()).getEstimatedCount(), "Count: " + g.getMeta().getCount() + "\n");
-			}
+			Manager.info(LanguageDetection.class, word, "Estimated Count: " + ((GoogleMeta)meta).getEstimatedCount(), "Count: " + meta.getCount());
 		}
-		else
-			Manager.error(App.class, "The wordlist file does not exist: " + wordlist_file);*/
 	}
 	
 	/**
