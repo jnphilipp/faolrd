@@ -3,11 +3,11 @@ package org.faolrd.parser.json;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.faolrd.parser.Parser;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,17 +15,21 @@ import org.json.simple.JSONObject;
 /**
  *
  * @author jnphilipp
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class JSONParser implements Parser {
 	/**
+	 * response code
+	 */
+	protected int responseCode = 0;
+	/**
 	 * JSON code
 	 */
-	private String json = "";
+	protected String json = "";
 	/**
 	 * JSONObject
 	 */
-	private JSONObject jsonObject;
+	protected JSONObject jsonObject;
 
 	/**
 	 * Default constructor.
@@ -48,6 +52,11 @@ public class JSONParser implements Parser {
 		return this.jsonObject;
 	}
 
+	@Override
+	public int getResponseCode() {
+		return this.responseCode;
+	}
+
 	/**
 	 * Builds a connection to the given page and retrieves the code.
 	 * @param json URL to JSON file
@@ -55,8 +64,22 @@ public class JSONParser implements Parser {
 	 */
 	@Override
 	public void fetch(String json) throws Exception {
+		this.fetch(json, Proxy.NO_PROXY);
+	}
+
+	/**
+	 * Builds a connection to the given page using the given proxy and retrieves the code.
+	 * @param json URL to JSON file
+	 * @param proxy proxy
+	 * @throws Exception 
+	 */
+	@Override
+	public void fetch(String json, Proxy proxy) throws Exception {
+		if ( proxy == null )
+			proxy = Proxy.NO_PROXY;
+
 		URL url = new URL(json);
-		HttpURLConnection con = (HttpURLConnection)url.openConnection();
+		HttpURLConnection con = (HttpURLConnection)url.openConnection(proxy);
 		con.setRequestProperty("Accept-Charset", "UTF-8");
 		con.connect();
 
@@ -80,9 +103,10 @@ public class JSONParser implements Parser {
 
 		buff.close();
 		in.close();
+		this.responseCode = con.getResponseCode();
+		con.disconnect();
 
 		this.json = text.toString().replace('\0', ' ');
-
 		this.jsonObject = (JSONObject)new org.json.simple.parser.JSONParser().parse(this.json.toString());
 	}
 
