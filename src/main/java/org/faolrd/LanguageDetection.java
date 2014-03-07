@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.Set;
 import org.faolrd.io.FReader;
 import org.faolrd.net.ProxyManager;
+import org.faolrd.parser.html.HTMLParser;
 import org.faolrd.parser.html.sites.GoogleWebSearchHTMLParser;
 import org.faolrd.parser.html.sites.HideMyAssHTMLParser;
 import org.faolrd.results.Result;
@@ -24,8 +25,8 @@ import org.faolrd.utils.Helpers;
 
 /**
  *
- * @author jnphilipp
- * @version 0.0.4
+ * @author jnphilipp, proewer
+ * @version 0.0.5
  */
 public class LanguageDetection {	
 	/**
@@ -88,8 +89,7 @@ public class LanguageDetection {
 	 * @throws RequestException
 	 * @throws DataSourceException 
 	 */
-	public boolean checkLanguage(String sentence) throws RequestException, DataSourceException
-	{
+	public boolean checkLanguage(String sentence) throws RequestException, DataSourceException {
 			Set languages = new HashSet();
 			int modus = 0;
 			boolean reduce = false;
@@ -113,8 +113,16 @@ public class LanguageDetection {
 					finalLang = ""+key;
 				}
 			}
-			Manager.info("Doc-Language: "+finalLang+"("+finalValue+")");
+			Manager.debug(LanguageDetection.class, "language: "+finalLang+"("+finalValue+")");
 		
 		return finalLang.equalsIgnoreCase(this.language);
+	}
+
+	public boolean getUrlText(String url) throws Exception {
+		String text;
+		HTMLParser parser = new HTMLParser(url, true);
+		text = parser.removeAllTags();
+
+		return checkLanguage(text);
 	}
 }
