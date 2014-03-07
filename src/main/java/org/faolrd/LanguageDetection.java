@@ -23,7 +23,7 @@ import org.faolrd.utils.Helpers;
 /**
  *
  * @author jnphilipp, proewer
- * @version 0.0.4
+ * @version 0.0.5
  */
 public class LanguageDetection {	
 	/**
