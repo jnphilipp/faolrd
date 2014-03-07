@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.faolrd.parser.html;
 
 import java.io.BufferedReader;
@@ -20,7 +15,7 @@ import org.faolrd.parser.Parser;
 /**
  *
  * @author jnphilipp
- * @version 1.7.3
+ * @version 1.7.4
  */
 public class HTMLParser implements Parser {
 	public static final String DEFAULT_USER_AGENT = "Mozilla/5.0";
@@ -675,6 +670,23 @@ public class HTMLParser implements Parser {
 			return "";
 
 		return tags.get(0);
+	}
+
+	/**
+	 * Removes all tags from the parsed code.
+	 * @return clean code
+	 */
+	public String removeAllTags() {
+		return removeAllTags(this.code);
+	}
+
+	/**
+	 * Removes all tags from the given code.
+	 * @param code code
+	 * @return clean code
+	 */
+	public static String removeAllTags(String code) {
+		return code.replaceAll("<[^>]*>", code);
 	}
 
 	/**
