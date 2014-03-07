@@ -85,7 +85,7 @@ public class GoogleWebSearchHTMLParser extends HTMLParser implements PaginatedPa
 			GoogleResult result = new GoogleResult();
 			Matcher title = Pattern.compile("<h3 class=\"r\">[^<]*<a href=\"/url\\?q=([^\"]*)&sa=U&ei=[^\"]*\"[^>]*>(.*?)</a>", Pattern.DOTALL | Pattern.MULTILINE).matcher(tag);
 			if ( title.find() ) {
-				result.setUrl(URLDecoder.decode(title.group(1).trim(), "UTF-8"));
+				result.setURL(URLDecoder.decode(title.group(1).trim(), "UTF-8"));
 				result.setTitle(title.group(2).replaceAll("<[^>]*>", "").trim());
 			}
 
@@ -93,7 +93,8 @@ public class GoogleWebSearchHTMLParser extends HTMLParser implements PaginatedPa
 			if ( snippet.find() )
 				result.setContent(snippet.group("snippet").trim().replaceAll("<[^>]*>", ""));
 
-			this.results.add(result);
+			if ( result.getURL() != null )
+				this.results.add(result);
 		}
 		this.meta.setCount(this.results.size());
 		Manager.info(GoogleWebSearchHTMLParser.class, "Query: " + query, "Results: " + this.results.size());

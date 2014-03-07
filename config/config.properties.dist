@@ -1,7 +1,6 @@
 #configurations
 wordlist.file=
 wordlist.language=
-query.average_length=
+query.average_lentgh=
 query.max_length=
 query.max_queries=
-GoogleWebSearchJSONParser.sleeptime=1000

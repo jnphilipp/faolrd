@@ -2,22 +2,21 @@ package org.faolrd.io;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
 /**
  *
  * @author jnphilipp
- * @version 0.0.1
+ * @version 0.0.2
  */
-public class FReader {
+public class FileReader {
 	public static String read(String file) throws FileNotFoundException, IOException {
 		Reader reader = null;
 		String content = "";
 
 		try {
-			reader = new BufferedReader(new FileReader(file));
+			reader = new BufferedReader(new java.io.FileReader(file));
 
 			while ( true ) {
 				int c = reader.read();

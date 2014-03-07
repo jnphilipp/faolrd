@@ -15,7 +15,7 @@ import org.json.simple.JSONObject;
 /**
  *
  * @author jnphilipp
- * @version 0.0.2
+ * @version 0.0.3
  */
 public class JSONParser implements Parser {
 	/**
@@ -55,6 +55,11 @@ public class JSONParser implements Parser {
 	@Override
 	public int getResponseCode() {
 		return this.responseCode;
+	}
+
+	@Override
+	public boolean isResponseCodeOK() {
+		return this.responseCode == HttpURLConnection.HTTP_OK;
 	}
 
 	/**

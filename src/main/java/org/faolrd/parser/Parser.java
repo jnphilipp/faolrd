@@ -14,6 +14,8 @@ public interface Parser {
 	 */
 	public abstract int getResponseCode();
 
+	public abstract boolean isResponseCodeOK();
+
 	/**
 	 * Builds a connection to the given URL and retrieves it. If a user-agent is given it will be used.
 	 * @param url URL which will be fetched

@@ -98,6 +98,11 @@ public class HTMLParser implements Parser {
 		return this.responseCode;
 	}
 
+	@Override
+	public boolean isResponseCodeOK() {
+		return this.responseCode == HttpURLConnection.HTTP_OK;
+	}
+
 	/**
 	 * Builds a connection to the given URL and retrieves it. If a user-agent is given it will be used.
 	 * @param url URL which will be fetched
@@ -686,7 +691,7 @@ public class HTMLParser implements Parser {
 	 * @return clean code
 	 */
 	public static String removeAllTags(String code) {
-		return code.replaceAll("<[^>]*>", code);
+		return code.replaceAll("<[^>]*>", "");
 	}
 
 	/**

@@ -11,15 +11,16 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import org.faolrd.io.FReader;
+import org.faolrd.io.FileReader;
+import org.faolrd.io.FileWriter;
 import org.faolrd.net.ProxyManager;
 import org.faolrd.parser.html.HTMLParser;
 import org.faolrd.parser.html.sites.GoogleWebSearchHTMLParser;
-import org.faolrd.parser.html.sites.HideMyAssHTMLParser;
 import org.faolrd.results.Result;
 import org.faolrd.utils.Helpers;
 
@@ -50,19 +51,22 @@ public class LanguageDetection {
 			throw new IOException("The wordlist file does not exist: " + this.wordlistFile);
 
 		List<String> queries = new LinkedList<>();
+		Set<String[]> sites = new LinkedHashSet<>();
 		this.createQueries(queries);
 
 		ProxyManager proxyManager = ProxyManager.getInstance();
-		proxyManager.setProxyParser(new HideMyAssHTMLParser());
-
+		//proxyManager.setProxyParser(new HideMyAssHTMLParser());
 		for ( String query : queries ) {
 			GoogleWebSearchHTMLParser google = new GoogleWebSearchHTMLParser();
 			proxyManager.fetch(query, google);
 
 			for ( Result result : google.getResults() ) {
-				this.checkLanguage(language);
+				if ( this.checkURL(result.getURL()) )
+					sites.add(new String[]{result.getTitle(), result.getURL(), result.getContent()});
 			}
 		}
+
+		FileWriter.writeCSV(Helpers.getSubUserDir("data") + "/" + Manager.getManager().getProperty("wordlist.file") + "_result.csv", sites);
 	}
 
 	public void createQueries(Collection<String> queries) throws IOException {
@@ -72,11 +76,16 @@ public class LanguageDetection {
 
 		Random r = new Random(System.currentTimeMillis());
 
-		String[] words = FReader.readLines(this.wordlistFile);
+		String[] words = FileReader.readLines(this.wordlistFile);
 		for ( int i = 0; i < maxQueries; i++ ) {
 			String query = "";
-			for ( int j = 0; j < averageLength; j++ )
-				query += r.nextInt(words.length) + " ";
+			for ( int j = 0; j < averageLength; j++ ) {
+				int next = r.nextInt(words.length);
+				if ( query.contains(words[next]) )
+					j--;
+				else
+					query += words[next] + " ";
+			}
 			query = query.substring(0, query.length() - 1);
 			queries.add(query);
 		}
@@ -113,16 +122,25 @@ public class LanguageDetection {
 					finalLang = ""+key;
 				}
 			}
-			Manager.debug(LanguageDetection.class, "language: "+finalLang+"("+finalValue+")");
+			Manager.debug(LanguageDetection.class, "Language: "+finalLang+"("+finalValue+")");
 		
 		return finalLang.equalsIgnoreCase(this.language);
 	}
 
-	public boolean getUrlText(String url) throws Exception {
-		String text;
-		HTMLParser parser = new HTMLParser(url, true);
-		text = parser.removeAllTags();
+	public boolean checkURL(String url) throws RequestException, DataSourceException {
+		Manager.debug(LanguageDetection.class, "URL: " + url);
+		HTMLParser parser;
 
-		return checkLanguage(text);
+		try {
+			parser = new HTMLParser(url, true);
+			if ( !parser.isResponseCodeOK() )
+				return false;
+		}
+		catch ( Exception e ) {
+			Manager.debug(LanguageDetection.class, e.toString());
+			return false;
+		}
+
+		return checkLanguage(parser.removeAllTags());
 	}
 }
