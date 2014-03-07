@@ -7,9 +7,9 @@ import org.faolrd.results.Result;
 /**
  *
  * @author jnphilipp
- * @version 0.0.1
+ * @version 0.0.2
  */
-public interface PaginatedParser {
+public interface PaginatedParser extends Parser {
 	/**
 	 * @return the meta
 	 */

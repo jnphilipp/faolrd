@@ -6,9 +6,9 @@ import java.util.Set;
 /**
  *
  * @author jnphilipp
- * @version 0.0.2
+ * @version 0.0.3
  */
-public interface ProxyParser {
+public interface ProxyParser extends Parser {
 	/**
 	 * @return the proxies
 	 * @throws Exception

@@ -14,6 +14,7 @@ import java.util.Set;
 import org.faolrd.io.FReader;
 import org.faolrd.net.ProxyManager;
 import org.faolrd.parser.html.sites.GoogleWebSearchHTMLParser;
+import org.faolrd.parser.html.sites.HideMyAssHTMLParser;
 import org.faolrd.results.Meta;
 import org.faolrd.results.google.GoogleMeta;
 import org.faolrd.utils.Helpers;
@@ -38,14 +39,14 @@ public class LanguageDetection {
 		if ( !new File(wordlist_file).exists() )
 			throw new IOException("The wordlist file does not exist: " + wordlist_file);
 
-		ProxyManager proxyManager = new ProxyManager();
-		//proxyManager.setProxyParser(new HideMyAssHTMLParser());
+		ProxyManager proxyManager = ProxyManager.getInstance();
+		proxyManager.setProxyParser(new HideMyAssHTMLParser());
 		String[] words = FReader.readLines(wordlist_file);
 
 		for ( String word : words ) {
-			proxyManager.setParser(new GoogleWebSearchHTMLParser());
-			proxyManager.fetch(word);
-			Meta meta = ((GoogleWebSearchHTMLParser)proxyManager.getParser()).getMeta();
+			GoogleWebSearchHTMLParser google = new GoogleWebSearchHTMLParser();
+			proxyManager.fetch(word, google);
+			Meta meta = google.getMeta();
 
 			Manager.info(LanguageDetection.class, word, "Estimated Count: " + ((GoogleMeta)meta).getEstimatedCount(), "Count: " + meta.getCount());
 		}

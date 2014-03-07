@@ -17,26 +17,19 @@ import org.faolrd.parser.ProxyParser;
  * @version 0.0.3
  */
 public class ProxyManager {
-	private Parser parser;
+	private static ProxyManager instance;
 	private ProxyParser proxyParser;
 	private Set<Proxy> proxies;
 
-	public ProxyManager() {
+	private ProxyManager() {
 		this.proxies = new LinkedHashSet<>();
 	}
 
-	/**
-	 * @return the parser
-	 */
-	public Parser getParser() {
-		return this.parser;
-	}
+	public static synchronized ProxyManager getInstance() {
+		if ( instance == null)
+			instance = new ProxyManager();
 
-	/**
-	 * @param parser the parser to set
-	 */
-	public void setParser(Parser parser) {
-		this.parser = parser;
+		return instance;
 	}
 
 	/**
@@ -61,48 +54,50 @@ public class ProxyManager {
 		Manager.debug(ProxyManager.class, "Proxies: " + this.proxies.size());
 	}
 
-	public void fetch(String url) throws Exception {
+	public void fetch(String url, Parser parser) throws Exception {
 		if ( this.proxies.isEmpty() )
 			this.loadProxies();
 
-		if ( this.parser instanceof PaginatedParser ) {
-			while ( ((PaginatedParser)this.parser).hasNextPage() ) {
-				this.paginatedFetch(url);
+		if ( parser instanceof PaginatedParser ) {
+			while ( ((PaginatedParser)parser).hasNextPage() ) {
+				this.paginatedFetch(url, parser);
 
 				if ( this.proxies.isEmpty() )
 					this.loadProxies();
 			}
 		}
 		else
-			this.singleFetch(url);
+			this.singleFetch(url, parser);
 	}
 
-	protected void singleFetch(String url) throws Exception {
+	protected void singleFetch(String url, Parser parser) throws Exception {
 		Proxy proxy = this.proxies.iterator().next();
-		this.proxies.remove(proxy);
 		Manager.debug(ProxyManager.class, proxy.toString());
 
 		try {
-			this.parser.fetch(url, proxy);
-			if ( this.parser.getResponseCode() != HttpURLConnection.HTTP_OK ) {
-				Manager.error(ProxyManager.class, "Response code: " + this.parser.getResponseCode());
-				this.singleFetch(url);
+			parser.fetch(url, proxy);
+			if ( parser.getResponseCode() != HttpURLConnection.HTTP_OK ) {
+				Manager.error(ProxyManager.class, "Response code: " + parser.getResponseCode());
+				this.proxies.remove(proxy);
+				this.singleFetch(url, parser);
 			}
 
 			this.proxies.add(proxy);
 		}
 		catch ( SSLException e ) {
 			Manager.error(ProxyManager.class, e.toString());
-			this.singleFetch(url);
+			this.proxies.remove(proxy);
+			this.singleFetch(url, parser);
 		}
 		catch ( IOException e ) {
 			Manager.error(ProxyManager.class, e.toString());
-			this.singleFetch(url);
+			this.proxies.remove(proxy);
+			this.singleFetch(url, parser);
 		}
 	}
 
-	protected void paginatedFetch(String url) throws Exception {
-		this.singleFetch(url);
-		((PaginatedParser)this.parser).nextPage();
+	protected void paginatedFetch(String url, Parser parser) throws Exception {
+		this.singleFetch(url, parser);
+		((PaginatedParser)parser).nextPage();
 	}
 }
