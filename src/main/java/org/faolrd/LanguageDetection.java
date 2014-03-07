@@ -13,6 +13,7 @@ import java.util.Hashtable;
 import java.util.Set;
 import org.faolrd.io.FReader;
 import org.faolrd.net.ProxyManager;
+import org.faolrd.parser.html.HTMLParser;
 import org.faolrd.parser.html.sites.GoogleWebSearchHTMLParser;
 import org.faolrd.parser.html.sites.HideMyAssHTMLParser;
 import org.faolrd.results.Meta;
@@ -21,8 +22,8 @@ import org.faolrd.utils.Helpers;
 
 /**
  *
- * @author jnphilipp
- * @version 0.0.4
+ * @author jnphilipp, proewer
+ * @version 0.0.5
  */
 public class LanguageDetection {	
 	/**
@@ -87,6 +88,15 @@ public class LanguageDetection {
 			Manager.info("Doc-Language: "+finalLang+"("+finalValue+")");
 		
 		return finalLang.equalsIgnoreCase(this.language);
+	}
+	
+	public boolean getUrlText(String url) throws Exception
+	{
+		String text;
+		HTMLParser parser = new HTMLParser(url, true);
+		text = parser.removeAllTags();
+		
+		return checkLanguage(text);
 	}
 
 	/**
