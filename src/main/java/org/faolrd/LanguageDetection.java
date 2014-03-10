@@ -24,6 +24,7 @@ import org.faolrd.parser.html.sites.GoogleWebSearchHTMLParser;
 import org.faolrd.results.Result;
 import org.faolrd.utils.Helpers;
 
+
 /**
  *
  * @author jnphilipp, proewer
@@ -73,24 +74,65 @@ public class LanguageDetection {
 		int averageLength = Manager.getInstance().getIntegerProperty("query.average_lentgh");
 		int maxLength = Manager.getInstance().getIntegerProperty("query.max_length");
 		int maxQueries = Manager.getInstance().getIntegerProperty("query.max_queries");
-
+                
 		Random r = new Random(System.currentTimeMillis());
+		List<String[]> csv = new LinkedList<>();
+		FileReader.readCSV(this.wordlistFile, csv, ";");
+		
+		int[] minMax = Helpers.getMinMax(csv, 1);
+		int middleLow = (Integer.parseInt(csv.get(minMax[1])[1])- Integer.parseInt(csv.get(minMax[0])[1]))/3;
+		int highMiddle = 2* middleLow;
 
-		String[] words = FileReader.readLines(this.wordlistFile);
 		for ( int i = 0; i < maxQueries; i++ ) {
 			String query = "";
-			for ( int j = 0; j < averageLength; j++ ) {
-				int next = r.nextInt(words.length);
-				if ( query.contains(words[next]) )
-					j--;
-				else
-					query += words[next] + " ";
+			int words = (r.nextInt(maxLength) > averageLength? maxLength: averageLength);
+			
+			for ( int j = 0; j < words; j++ ) {
+				List<Integer> suddenDeath = new LinkedList<>();
+				int next = r.nextInt(csv.size());
+                                
+        if(j == 0) {
+					query += csv.get(next)[0] + " ";
+					suddenDeath.add(this.headshot(highMiddle,middleLow , Integer.parseInt(csv.get(next)[1])));
+				}
+				else {
+					int headshot = this.headshot(highMiddle,middleLow , Integer.parseInt(csv.get(next)[1]));
+					boolean kill = true;
+					for(int k : suddenDeath)
+						if (headshot == k)
+							kill = false;
+					
+					if(kill)
+					{
+						query += csv.get(next)[0] + " ";
+						suddenDeath.add(this.headshot(highMiddle,middleLow , Integer.parseInt(csv.get(next)[1])));
+						if ( suddenDeath.size() >= 3 )
+							suddenDeath.clear();
+					}
+					else {
+						j--;
+					}
+				}
 			}
+
 			query = query.substring(0, query.length() - 1);
-			queries.add(query);
+			if ( !queries.contains(query) )
+				queries.add(query);
+			else {
+				i--;
+			}
 		}
 	}
 
+	private int headshot(int a, int b, int c)
+	{
+		if(c > a)
+		 return 1;
+		else if( b > a)
+			return 0;
+		else
+			return -1;
+	}
 	/**
 	 * 
 	 * @param sentence

@@ -1,6 +1,10 @@
 package org.faolrd.utils;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * 
@@ -37,6 +41,7 @@ public class Helpers {
 
 		if ( array == null || array.length == 0 )
 			return null;
+		
 
 		for ( T t : array )
 			builder.append(t).append(cement);
@@ -63,5 +68,31 @@ public class Helpers {
 
 		builder.delete(builder.length() - cement.length(), builder.length());
 		return builder.toString();
+	}
+
+	/**
+	 * Sorts the given list.
+	 * @param toSort list to sort
+	 * @param column column which will be used
+	 */
+	public static void sort(List<String[]> toSort, final int column) {
+		Collections.sort(toSort, new Comparator<String[]>() {
+			@Override
+			public int compare(String[] f, String[] g) {
+				return f[column].compareTo(g[column]);
+			}
+		});
+	}
+	
+	public static int[] getMinMax(List<String[]> list, int column) {
+		int[] minMax = new int[2];
+
+		for ( int i = 1; i < list.size(); i++ ) {
+			if ( Integer.parseInt(list.get(i)[column]) < Integer.parseInt(list.get(minMax[0])[column]) )
+				minMax[0] = i;
+			if ( Integer.parseInt(list.get(i)[column]) > Integer.parseInt(list.get(minMax[1])[column]) )
+				minMax[1] = i;
+		}
+		return minMax;
 	}
 }
