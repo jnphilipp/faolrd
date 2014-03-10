@@ -131,6 +131,9 @@ public class LanguageDetection {
 		Manager.debug(LanguageDetection.class, "URL: " + url);
 		HTMLParser parser;
 
+		if ( !Manager.getManager().getBooleanProperty("jlani.check_results") )
+			return true;
+
 		try {
 			parser = new HTMLParser(url, true);
 			if ( !parser.isResponseCodeOK() )

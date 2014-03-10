@@ -4,3 +4,4 @@ wordlist.language=
 query.average_lentgh=
 query.max_length=
 query.max_queries=
+jlani.check_results=true

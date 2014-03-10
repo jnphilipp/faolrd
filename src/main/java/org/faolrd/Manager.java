@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-
 import org.apache.log4j.PropertyConfigurator;
 import org.faolrd.utils.Helpers;
 import org.slf4j.Logger;
@@ -110,6 +109,15 @@ public class Manager {
 			default:
 				return this.properties.getProperty(key, "");
 		}
+	}
+
+	/**
+	 * Returns the value of the given key as boolean.
+	 * @param key key
+	 * @return boolean value
+	 */
+	public boolean getBooleanProperty(String key) {
+		return Boolean.parseBoolean(this.getProperty(key));
 	}
 
 	/**
