@@ -21,6 +21,7 @@ import org.faolrd.io.FileWriter;
 import org.faolrd.net.ProxyManager;
 import org.faolrd.parser.html.HTMLParser;
 import org.faolrd.parser.html.sites.GoogleWebSearchHTMLParser;
+import org.faolrd.parser.html.sites.HideMyAssHTMLParser;
 import org.faolrd.results.Result;
 import org.faolrd.utils.Helpers;
 
@@ -45,7 +46,7 @@ public class LanguageDetection {
 	 */
 	public void start() throws Exception {
 		this.wordlistFile = Helpers.getSubUserDir("data") + "/" + Manager.getManager().getProperty("wordlist.file");
-		this.language = Manager.getInstance().getProperty("wordlist.language");
+		this.language = Manager.getManager().getProperty("wordlist.language");
 
 		if ( !new File(this.wordlistFile).exists() )
 			throw new IOException("The wordlist file does not exist: " + this.wordlistFile);
@@ -55,7 +56,8 @@ public class LanguageDetection {
 		this.createQueries(queries);
 
 		ProxyManager proxyManager = ProxyManager.getInstance();
-		//proxyManager.setProxyParser(new HideMyAssHTMLParser());
+		if ( !Manager.getManager().getBooleanProperty("faolrd.use_proxies") )
+			proxyManager.setProxyParser(new HideMyAssHTMLParser());
 		for ( String query : queries ) {
 			GoogleWebSearchHTMLParser google = new GoogleWebSearchHTMLParser();
 			proxyManager.fetch(query, google);
@@ -70,9 +72,9 @@ public class LanguageDetection {
 	}
 
 	public void createQueries(Collection<String> queries) throws IOException {
-		int averageLength = Manager.getInstance().getIntegerProperty("query.average_lentgh");
-		int maxLength = Manager.getInstance().getIntegerProperty("query.max_length");
-		int maxQueries = Manager.getInstance().getIntegerProperty("query.max_queries");
+		int averageLength = Manager.getManager().getIntegerProperty("query.average_lentgh");
+		int maxLength = Manager.getManager().getIntegerProperty("query.max_length");
+		int maxQueries = Manager.getManager().getIntegerProperty("query.max_queries");
 
 		Random r = new Random(System.currentTimeMillis());
 
@@ -131,7 +133,7 @@ public class LanguageDetection {
 		Manager.debug(LanguageDetection.class, "URL: " + url);
 		HTMLParser parser;
 
-		if ( !Manager.getManager().getBooleanProperty("jlani.check_results") )
+		if ( !Manager.getManager().getBooleanProperty("faolrd.jlani.check_results") )
 			return true;
 
 		try {
