@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collection;
 
 /**
  *
@@ -41,5 +42,18 @@ public class FileReader {
 			return new String[0];
 
 		return content.split(System.lineSeparator());
+	}
+
+	/**
+	 * Reads the given file as CSV.
+	 * @param file file
+	 * @param csv CSV output
+	 * @param cement cement
+	 * @throws IOException 
+	 */
+	public static void readCSV(String file, Collection<String[]> csv, String cement) throws IOException {
+		String[] lines = readLines(file);
+		for ( String line : lines )
+			csv.add(line.split(cement));
 	}
 }
