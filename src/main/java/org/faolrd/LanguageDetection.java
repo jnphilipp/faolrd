@@ -56,7 +56,7 @@ public class LanguageDetection {
 		this.createQueries(queries);
 
 		ProxyManager proxyManager = ProxyManager.getInstance();
-		if ( !Manager.getManager().getBooleanProperty("faolrd.use_proxies") )
+		if ( Manager.getManager().getBooleanProperty("faolrd.use_proxies") )
 			proxyManager.setProxyParser(new HideMyAssHTMLParser());
 		for ( String query : queries ) {
 			GoogleWebSearchHTMLParser google = new GoogleWebSearchHTMLParser();
