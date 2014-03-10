@@ -1,6 +1,5 @@
 package org.faolrd.utils;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -83,7 +82,7 @@ public class Helpers {
 			}
 		});
 	}
-	
+
 	public static int[] getMinMax(List<String[]> list, int column) {
 		int[] minMax = new int[2];
 
