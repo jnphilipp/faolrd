@@ -78,6 +78,10 @@ public class ProxyManager {
 			parser.fetch(url, proxy);
 			if ( parser.getResponseCode() != HttpURLConnection.HTTP_OK ) {
 				Manager.error(ProxyManager.class, "Response code: " + parser.getResponseCode());
+
+				if ( proxy == Proxy.NO_PROXY )
+					throw new IOException("Response code ist: " + parser.getResponseCode() + " without any proxy.");
+
 				this.proxies.remove(proxy);
 				this.singleFetch(url, parser);
 			}
