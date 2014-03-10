@@ -313,7 +313,6 @@ public class LanIKernel implements kernel {
 			return response;
 		}
 
-		// clean the sentences, e.g. remove special chars like !"§$%&/() ...
 		sentence = this.cleanSentence(sentence);
 
 		String[] splittedsentence = sentence.split(" ");
@@ -613,7 +612,7 @@ public class LanIKernel implements kernel {
 
 		// req.setWordsToCheck(5);
 		req
-				.setSentence("° und last but not least, bin ich ein _kurzer_ deutscher Satz (hubergel)!");
+				.setSentence(" und last but not least, bin ich ein _kurzer_ deutscher Satz (hubergel)!");
 		System.out.println("\"" + req.getSentence() + "\"");
 		Response resp = kernel.evaluate(req);
 		System.out.println("response: " + resp);
