@@ -80,6 +80,8 @@ public class LanguageDetection {
 		Random r = new Random(System.currentTimeMillis());
 		List<String[]> csv = new LinkedList<>();
 		FileReader.readCSV(this.wordlistFile, csv, ";");
+		if ( Manager.getManager().getBooleanProperty("wordlist.has_header") )
+			csv.remove(0);
 
 		int[] minMax = Helpers.getMinMax(csv, 1);
 		int middleLow = (Integer.parseInt(csv.get(minMax[1])[1])- Integer.parseInt(csv.get(minMax[0])[1])) / 3;
