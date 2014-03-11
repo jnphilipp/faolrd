@@ -190,6 +190,11 @@ public class LanguageDetection {
 		Manager.debug(LanguageDetection.class, "URL: " + url);
 		HTMLParser parser;
 
+		if ( finalLanguage != null ) {
+				finalLanguage.add("");
+				finalLanguage.add(0);
+			}
+
 		if ( !Manager.getManager().getBooleanProperty("faolrd.jlani.check_results") )
 			return true;
 
