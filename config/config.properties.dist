@@ -7,3 +7,4 @@ query.max_length=
 query.max_queries=
 faolrd.jlani.check_results=true
 faolrd.use_proxies=true
+faolrd.save_all_results=false

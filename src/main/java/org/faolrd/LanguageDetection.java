@@ -8,9 +8,9 @@ import de.uni_leipzig.asv.toolbox.jLanI.kernel.Response;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,12 +64,20 @@ public class LanguageDetection {
 			proxyManager.fetch(query, google);
 
 			for ( Result result : google.getResults() ) {
-				if ( this.checkURL(result.getURL()) )
-					sites.add(new String[]{result.getTitle(), result.getURL(), result.getContent()});
+				if ( Manager.getManager().getBooleanProperty("faolrd.save_all_results") ) {
+					List<Object> finalLanguage = new LinkedList<>();
+					this.checkURL(result.getURL(), finalLanguage);
+					sites.add(new String[]{query, result.getTitle(), result.getURL(), result.getContent().replace("\n", " "), finalLanguage.get(0).toString(), finalLanguage.get(1).toString()});
+				}
+				else {
+					List<Object> finalLanguage = new LinkedList<>();
+					if ( this.checkURL(result.getURL(), finalLanguage) )
+						sites.add(new String[]{query, result.getTitle(), result.getURL(), result.getContent().replace("\n", " "), finalLanguage.get(0).toString(), finalLanguage.get(1).toString()});
+				}
 			}
-		}
 
-		FileWriter.writeCSV(Helpers.getSubUserDir("data") + "/" + Manager.getManager().getProperty("wordlist.file") + "_result.csv", sites);
+			FileWriter.writeCSV(Helpers.getSubUserDir("data") + "/" + Manager.getManager().getProperty("wordlist.file") + "_result.csv", sites);
+		}
 	}
 
 	public void createQueries(Collection<String> queries) throws IOException {
@@ -138,40 +146,47 @@ public class LanguageDetection {
 	/**
 	 * 
 	 * @param sentence
+	 * @param finalLanguage
 	 * @return <code>True</code> if the language of the website the same like the language of the given wordlist 
 	 * @throws RequestException
 	 * @throws DataSourceException 
 	 */
-	public boolean checkLanguage(String sentence) throws RequestException, DataSourceException {
-			Set languages = new HashSet();
-			int modus = 0;
-			boolean reduce = false;
-			Request req = new Request(sentence, languages, modus, reduce);
-			LanIKernel kernel = LanIKernel.getInstance();
-			Response res = kernel.evaluate(req);
-			Hashtable result = new Hashtable(res.getResult());
-			
-			Enumeration enumeration = result.keys();
-			double finalValue = 0;
-			String finalLang = "";
-			
-			while(enumeration.hasMoreElements())
-			{
-				Object key = enumeration.nextElement();
-				Object value = result.get(key);
-				double val = ((Double)value).doubleValue();
-				if(val > finalValue)
-				{
-					finalValue = val;
-					finalLang = ""+key;
-				}
+	public boolean checkLanguage(String sentence, Collection<Object> finalLanguage) throws RequestException, DataSourceException {
+		Set languages = new HashSet();
+		int modus = 0;
+		boolean reduce = false;
+		Request req = new Request(sentence, languages, modus, reduce);
+		LanIKernel kernel = LanIKernel.getInstance();
+		Response res = kernel.evaluate(req);
+		HashMap result = new HashMap(res.getResult());
+
+		String finalLang = "";
+		double finalValue = Double.MIN_VALUE;
+		Iterator iterator = result.keySet().iterator();
+		while ( iterator.hasNext() ) {
+			Object key = iterator.next();
+			double value = Double.valueOf(result.get(key).toString());
+			if ( value > finalValue ) {
+				finalValue = value;
+				finalLang = key.toString();
 			}
-			Manager.debug(LanguageDetection.class, "Language: "+finalLang+"("+finalValue+")");
-		
+		}
+
+		Manager.debug(LanguageDetection.class, "Language: " + this.language, "JLani language: " + finalLang + " (" + finalValue + ")");
+
+		if ( finalLanguage != null ) {
+			finalLanguage.add(finalLang);
+			finalLanguage.add(finalValue);
+		}
+
 		return finalLang.equalsIgnoreCase(this.language);
 	}
 
 	public boolean checkURL(String url) throws RequestException, DataSourceException {
+		return this.checkURL(url, null);
+	}
+
+	public boolean checkURL(String url, Collection<Object> finalLanguage) throws RequestException, DataSourceException {
 		Manager.debug(LanguageDetection.class, "URL: " + url);
 		HTMLParser parser;
 
@@ -188,6 +203,6 @@ public class LanguageDetection {
 			return false;
 		}
 
-		return checkLanguage(parser.removeAllTags());
+		return checkLanguage(parser.removeAllTags(), finalLanguage);
 	}
 }

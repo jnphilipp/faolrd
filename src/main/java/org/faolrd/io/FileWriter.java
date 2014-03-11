@@ -13,12 +13,15 @@ import org.faolrd.utils.Helpers;
  * @version 0.0.1
  */
 public class FileWriter {
-	public static void write(String file, String content) throws FileNotFoundException, IOException {
+	public static void write(String file, boolean append, String content) throws FileNotFoundException, IOException {
 		Writer writer = null;
 
 		try {
 			writer = new BufferedWriter(new java.io.FileWriter(file));
-			writer.append(content);
+			if ( append )
+				writer.append(content);
+			else
+				writer.write(content);
 		}
 		finally {
 			if ( writer != null )
@@ -33,7 +36,7 @@ public class FileWriter {
 	public static void writeCSV(String file, Collection<String[]> lines, String cement) throws FileNotFoundException, IOException {
 		String content = "";
 		for ( String[] line : lines )
-			content += Helpers.join(line, cement);
-		FileWriter.write(file, content);
+			content += System.lineSeparator() + Helpers.join(line, cement);
+		FileWriter.write(file, false, content);
 	}
 }
