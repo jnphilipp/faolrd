@@ -202,6 +202,8 @@ public class LanguageDetection {
 			parser = new HTMLParser(url, true);
 			if ( !parser.isResponseCodeOK() )
 				return false;
+			if ( !parser.getContentType().contains("text/html") )
+				return false;
 		}
 		catch ( Exception e ) {
 			Manager.debug(LanguageDetection.class, e.toString());
