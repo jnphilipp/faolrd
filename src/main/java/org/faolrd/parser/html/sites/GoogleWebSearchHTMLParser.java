@@ -21,11 +21,11 @@ import org.faolrd.results.google.GoogleResult;
 /**
  *
  * @author jnphilipp
- * @version 0.0.2
+ * @version 0.0.3
  */
 public class GoogleWebSearchHTMLParser extends HTMLParser implements PaginatedParser {
 	private int page = 0;
-	private int numPerPage = 100;
+	private int numPerPage = 500;
 	private GoogleMeta meta;
 	private List<Result> results;
 

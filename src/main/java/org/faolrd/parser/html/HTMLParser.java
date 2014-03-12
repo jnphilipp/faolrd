@@ -15,7 +15,7 @@ import org.faolrd.parser.Parser;
 /**
  *
  * @author jnphilipp
- * @version 1.7.4
+ * @version 1.7.5
  */
 public class HTMLParser implements Parser {
 	public static final String DEFAULT_USER_AGENT = "Mozilla/5.0";
