@@ -182,6 +182,10 @@ public class LanguageDetection {
 			finalLanguage.add(finalLang);
 			finalLanguage.add(finalValue);
 		}
+		else {
+			finalLanguage.add("");
+			finalLanguage.add(0);
+		}
 
 		return finalLang.equalsIgnoreCase(this.language);
 	}
@@ -194,23 +198,32 @@ public class LanguageDetection {
 		Manager.debug(LanguageDetection.class, "URL: " + url);
 		HTMLParser parser;
 
-		if ( finalLanguage == null ) {
-				finalLanguage.add("");
-				finalLanguage.add(0);
-			}
+		if ( finalLanguage == null )
+			finalLanguage = new LinkedList<>();
 
-		if ( !Manager.getManager().getBooleanProperty("faolrd.jlani.check_results") )
+		if ( !Manager.getManager().getBooleanProperty("faolrd.jlani.check_results") ) {
+			finalLanguage.add("");
+			finalLanguage.add(0);
 			return true;
+		}
 
 		try {
 			parser = new HTMLParser(url, true);
-			if ( !parser.isResponseCodeOK() )
+			if ( !parser.isResponseCodeOK() ) {
+				finalLanguage.add("");
+				finalLanguage.add(0);
 				return false;
-			if ( !parser.getContentType().contains("text/html") )
+			}
+			if ( !parser.getContentType().contains("text/html") ) {
+				finalLanguage.add("");
+				finalLanguage.add(0);
 				return false;
+			}
 		}
 		catch ( Exception e ) {
 			Manager.debug(LanguageDetection.class, e.toString());
+			finalLanguage.add("");
+			finalLanguage.add(0);
 			return false;
 		}
 
