@@ -14,7 +14,7 @@ import org.faolrd.parser.ProxyParser;
 /**
  *
  * @author jnphilipp
- * @version 0.0.3
+ * @version 0.0.4
  */
 public class ProxyManager {
 	private static ProxyManager instance;
@@ -77,7 +77,7 @@ public class ProxyManager {
 		try {
 			parser.fetch(url, proxy);
 			if ( parser.getResponseCode() != HttpURLConnection.HTTP_OK ) {
-				Manager.error(ProxyManager.class, "Response code: " + parser.getResponseCode());
+				Manager.error(ProxyManager.class, "URL: " + url, "Response code: " + parser.getResponseCode());
 
 				if ( proxy == Proxy.NO_PROXY )
 					throw new IOException("Response code ist: " + parser.getResponseCode() + " without any proxy.");
