@@ -19,6 +19,7 @@ import org.faolrd.parser.Parser;
  */
 public class HTMLParser implements Parser {
 	public static final String DEFAULT_USER_AGENT = "Mozilla/5.0";
+	public static final int DEFAULT_TIMEOUT = 10000;
 	/**
 	 * response code
 	 */
@@ -35,12 +36,17 @@ public class HTMLParser implements Parser {
 	 * content type
 	 */
 	protected String contentType = "";
+	/**
+	 * timeout
+	 */
+	protected int timeout;
 
 	/**
 	 * Default constructor.
 	 */
 	public HTMLParser() {
 		this.setDefaultUserAgent();
+		this.setDefaultTimeout();
 	}
 
 	/**
@@ -49,6 +55,7 @@ public class HTMLParser implements Parser {
 	 */
 	public HTMLParser(String url) throws Exception {
 		this.setDefaultUserAgent();
+		this.setDefaultTimeout();
 		this.fetch(url);
 	}
 
@@ -59,6 +66,7 @@ public class HTMLParser implements Parser {
 	 */
 	public HTMLParser(String url, boolean decodeHTML) throws Exception {
 		this.setDefaultUserAgent();
+		this.setDefaultTimeout();
 		this.fetch(url, decodeHTML);
 	}
 
@@ -75,6 +83,21 @@ public class HTMLParser implements Parser {
 	 */
 	public void setDefaultUserAgent() {
 		this.userAgent = HTMLParser.DEFAULT_USER_AGENT;
+	}
+
+	/**
+	 * Sets the User-Agent to the given agent.
+	 * @param agent New User-Agent to use.
+	 */
+	public void setTimeout(String agent) {
+		this.userAgent = agent;
+	}
+
+	/**
+	 * Sets the timeout to the default timeout.
+	 */
+	public void setDefaultTimeout() {
+		this.timeout = HTMLParser.DEFAULT_TIMEOUT;
 	}
 
 	/**
@@ -148,6 +171,8 @@ public class HTMLParser implements Parser {
 
 		URL u = new URL(url);
 		HttpURLConnection con = (HttpURLConnection)u.openConnection(proxy);
+		con.setConnectTimeout(this.timeout);
+		con.setReadTimeout(this.timeout);
 
 		if ( !this.userAgent.equals("") )
 			con.setRequestProperty("User-Agent", this.userAgent);
