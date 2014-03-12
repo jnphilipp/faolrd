@@ -114,8 +114,12 @@ public class LanguageDetection {
 							kill = false;
 
 					if ( kill ) {
-						query += csv.get(next)[0] + " ";
-						suddenDeath.add(this.headshot(highMiddle,middleLow , Integer.parseInt(csv.get(next)[1])));
+						if ( query.contains(csv.get(next)[0]) )
+							j--;
+						else {
+							query += csv.get(next)[0] + " ";
+							suddenDeath.add(this.headshot(highMiddle,middleLow , Integer.parseInt(csv.get(next)[1])));
+						}
 						if ( suddenDeath.size() >= 3 )
 							suddenDeath.clear();
 					}
@@ -190,7 +194,7 @@ public class LanguageDetection {
 		Manager.debug(LanguageDetection.class, "URL: " + url);
 		HTMLParser parser;
 
-		if ( finalLanguage != null ) {
+		if ( finalLanguage == null ) {
 				finalLanguage.add("");
 				finalLanguage.add(0);
 			}
