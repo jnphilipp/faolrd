@@ -3,8 +3,26 @@ faolrd
 
 fully automated online language resource detection
 
-Bevor run: copy the resources folder from the jlani project into the faolrd folder
-(http://wortschatz.uni-leipzig.de/~cbiemann/software/toolbox/ASV_Toolbox_JLanIv1.0.zip)
 
+In order to use JLanI you need wordlists in a resources folder. For example wordlist look at:
+http://wortschatz.uni-leipzig.de/~cbiemann/software/toolbox/ASV_Toolbox_JLanIv1.0.zip
+
+With the JLanI GUI you can create the wordlist you need.
+
+
+Configuration:
+ * wordlist.file: defines the location of the word list in csv format (word;frequenzy)
+ * wordlist.has_header: set to true if the input file has a header line
+ * wordlist.language: language of the input wordlist file
+ * query.average_lentgh: average length of a query
+ * query.max_length: maximum length of a query
+ * query.max_queries: number of queries
+ * faolrd.jlani.check_results: if true the result pages will be check by JLani
+ * faolrd.use_proxies: if true the Google request will be tunneled trough proxy
+ * faolrd.save_all_results: if true all results will be saved in the output file else only the confirmed results will be saved
+
+The output file will be created in the same as the input file with an additinal _results.csv.
+Each line of the output file is a result in the form:
+query; result_title; result_URL; result_content; jlani_language; jlani_value
 
 To run: mvn compile exec:java
