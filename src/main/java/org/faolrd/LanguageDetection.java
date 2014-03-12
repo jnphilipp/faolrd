@@ -67,7 +67,7 @@ public class LanguageDetection {
 				if ( Manager.getManager().getBooleanProperty("faolrd.save_all_results") ) {
 					List<Object> finalLanguage = new LinkedList<>();
 					this.checkURL(result.getURL(), finalLanguage);
-					sites.add(new String[]{query, result.getTitle(), result.getURL(), result.getContent().replace("\n", " "), finalLanguage.get(0).toString(), finalLanguage.get(1).toString()});
+					sites.add(new String[]{query, result.getTitle(), result.getURL(),(result.getContent() != null ? result.getContent().replace("\n", " ") : ""), finalLanguage.get(0).toString(), finalLanguage.get(1).toString()});
 				}
 				else {
 					List<Object> finalLanguage = new LinkedList<>();
