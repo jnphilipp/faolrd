@@ -1,5 +1,10 @@
 config/*.properties
 data/*
+docu/faolrd.aux
+docu/faolrd.log
+docu/faolrd.out
+docu/faolrd.synctex.gz
+docu/faolrd.toc
 target/*
 .settings/*
 .classpath
